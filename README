@@ -1,0 +1,19 @@
+curl -L -o .gitignore https://raw.githubusercontent.com/github/gitignore/main/Global/Windows.gitignore
+curl -L -o .gitignore https://www.toptal.com/developers/gitignore/api/python,terraform,ubuntu,aws
+curl -L -o .gitignore https://www.toptal.com/developers/gitignore/api/{languages,platforms,tools}
+
+# EKS
+aws eks update-kubeconfig --name dev-obsv --user-alias installadmin
+
+# kind operations
+kind create cluster --config kind-three-node-cluster.yaml 
+kind create cluster --name certmanager --image kindest/node:v1.19.1
+
+# install kind
+
+# For AMD64 / x86_64
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-amd64
+# For ARM64
+[ $(uname -m) = aarch64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-arm64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
