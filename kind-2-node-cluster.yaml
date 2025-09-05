@@ -1,0 +1,12 @@
+# multi-node-cluster.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  # Map port 31071 on the host to port 31071 on the node
+  extraPortMappings:
+  - containerPort: 31071
+    hostPort: 31071
+    # protocol: tcp (optional)
+- role: worker
+- role: worker

@@ -17,3 +17,16 @@ kind create cluster --name certmanager --image kindest/node:v1.19.1
 [ $(uname -m) = aarch64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-arm64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
+
+
+
+# Download using wget
+wget https://github.com/kubernetes-sigs/kind/releases/download/v0.30.0/kind-linux-amd64 -O kind
+
+# Make executable and move to PATH
+chmod +x kind
+sudo mv kind /usr/local/bin/
+
+# Verify
+kind version
+
