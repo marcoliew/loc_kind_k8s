@@ -1,0 +1,62 @@
+mode: deployment
+replicaCount: 2
+
+image:
+  repository: otel/opentelemetry-collector-contrib
+  tag: 0.99.0
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc: {}
+        http: {}
+    prometheus:
+      config:
+        scrape_configs:
+          # kube-state-metrics only
+          - job_name: 'kube-state-metrics'
+            kubernetes_sd_configs:
+              - role: pod
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_pod_label_app]
+                regex: kube-state-metrics
+                action: keep
+
+          # test-app metrics (optional)
+          # - job_name: 'test-app-metrics'
+          #   kubernetes_sd_configs:
+          #     - role: pod
+          #   relabel_configs:
+          #     - source_labels: [__meta_kubernetes_pod_label_app]
+          #       regex: test-app
+          #       action: keep
+
+  processors:
+    memory_limiter:
+      check_interval: 5s
+      limit_percentage: 80
+      spike_limit_percentage: 25
+    batch: {}
+
+  exporters:
+    logging: {}
+    debug: {}
+
+  service:
+    telemetry:
+      metrics:
+        address: 0.0.0.0:8889
+    pipelines:
+      metrics:
+        receivers: [prometheus]
+        processors: [memory_limiter, batch]
+        exporters: [logging]
+      logs:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [debug]
+      traces:
+        receivers: [otlp]
+        processors: [memory_limiter, batch]
+        exporters: [logging]

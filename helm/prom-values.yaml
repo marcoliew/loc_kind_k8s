@@ -1,0 +1,18 @@
+grafana:
+  additionalDataSources:
+  - access: proxy
+    isDefault: false
+    jsonData:
+      maxLines: 1000
+    name: Loki
+    type: loki
+    url: http://loki.observability.svc.cluster.local:3100
+  - access: proxy
+    isDefault: false
+    jsonData:
+      httpMethod: GET
+      serviceMap:
+        datasourceUid: prometheus
+    name: Tempo
+    type: tempo
+    url: http://tempo.observability.svc.cluster.local:3200

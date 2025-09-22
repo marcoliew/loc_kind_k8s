@@ -1,0 +1,44 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 30000
+    hostPort: 30000
+    protocol: TCP
+  - containerPort: 31000
+    hostPort: 31000
+    protocol: TCP
+  - containerPort: 32000
+    hostPort: 32000
+    protocol: TCP
+  - containerPort: 31071
+    hostPort: 31071
+    protocol: TCP
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    apiVersion: kubeadm.k8s.io/v1beta4
+    apiServer:
+      extraArgs:
+        enable-aggregator-routing: "true"
+    controllerManager:
+      extraArgs:
+        feature-gates: "AggregatedDiscoveryEndpoint=true"
+    scheduler:
+      extraArgs:
+        feature-gates: "AggregatedDiscoveryEndpoint=true"
+  - |
+    kind: InitConfiguration
+    apiVersion: kubeadm.k8s.io/v1beta4
+    nodeRegistration:
+      kubeletExtraArgs:
+        feature-gates: "AggregatedDiscoveryEndpoint=true"
+- role: worker
+- role: worker

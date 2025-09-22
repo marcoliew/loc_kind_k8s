@@ -1,1 +1,6 @@
 helm install my-chart --values dev-values.yaml
+
+
+
+# keep original setting uprade
+helm upgrade loki grafana/loki-stack -n observability -f loki-values.yaml --reuse-values

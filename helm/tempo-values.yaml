@@ -1,0 +1,10 @@
+grafana:
+  datasources:
+    datasource.yaml:
+      apiVersion: 1
+      datasources:
+      - name: Tempo
+        type: tempo
+        url: http://tempo.observability.svc.cluster.local:3200
+        access: proxy
+        isDefault: false

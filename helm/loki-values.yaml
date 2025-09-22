@@ -1,0 +1,36 @@
+# loki-values-final.yaml
+loki:
+  isDefault: false
+  config:
+    auth_enabled: false
+    limits_config:
+      retention_period: 120h
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: boltdb-shipper
+          object_store: filesystem
+          schema: v11
+          index:
+            prefix: index_
+            period: 24h
+    storage_config:
+      boltdb_shipper:
+        shared_store: filesystem
+    # DISABLE RULER COMPLETELY
+    ruler:
+      enable_api: false
+      enable_alertmanager_v2: false
+  
+  # REMOVE the extraVolumes and extraVolumeMounts - let Helm handle it
+  persistence:
+    enabled: true
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce
+
+promtail:
+  enabled: true
+
+grafana:
+  enabled: false

@@ -1,0 +1,54 @@
+# otel-collector.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: observability
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+    exporters:
+      logging:
+      otlp:
+        endpoint: tempo:4317
+        insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [logging, otlp]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.99.0
+          command: ["/otelcol"]
+          args: ["--config=/etc/otel-collector-config.yaml"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/
+      volumes:
+        - name: config
+          configMap:
+            name: otel-collector-config
+            items:
+              - key: otel-collector-config.yaml
+                path: otel-collector-config.yaml
